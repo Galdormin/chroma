@@ -20,7 +20,7 @@ pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             flex_direction: FlexDirection::Column,
-            row_gap: px(20),
+            row_gap: px(5),
             ..default()
         },
         // Don't block picking events for other UI roots.
@@ -33,7 +33,7 @@ pub fn header(text: impl Into<String>) -> impl Bundle {
     (
         Name::new("Header"),
         Text(text.into()),
-        TextFont::from_font_size(40.0),
+        TextFont::from_font_size(24.0),
         TextColor(HEADER_TEXT),
     )
 }
@@ -43,7 +43,7 @@ pub fn label(text: impl Into<String>) -> impl Bundle {
     (
         Name::new("Label"),
         Text(text.into()),
-        TextFont::from_font_size(24.0),
+        TextFont::from_font_size(16.0),
         TextColor(LABEL_TEXT),
     )
 }
@@ -59,8 +59,8 @@ where
         text,
         action,
         Node {
-            width: px(380),
-            height: px(80),
+            width: px(150),
+            height: px(20),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             border_radius: BorderRadius::MAX,
@@ -80,8 +80,8 @@ where
         text,
         action,
         Node {
-            width: px(30),
-            height: px(30),
+            width: px(20),
+            height: px(20),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             ..default()
@@ -104,29 +104,31 @@ where
     let action = IntoObserverSystem::into_system(action);
     (
         Name::new("Button"),
-        Node::default(),
+        button_bundle,
         Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
             parent
                 .spawn((
-                    Name::new("Button Inner"),
-                    Button,
-                    BackgroundColor(BUTTON_BACKGROUND),
+                    Name::new("Button Text"),
+                    Text(text),
+                    TextFont::from_font_size(24.0),
                     InteractionPalette {
-                        none: BUTTON_BACKGROUND,
-                        hovered: BUTTON_HOVERED_BACKGROUND,
-                        pressed: BUTTON_PRESSED_BACKGROUND,
+                        none: BUTTON_TEXT,
+                        hovered: GREEN,
+                        pressed: GREEN,
                     },
-                    children![(
-                        Name::new("Button Text"),
-                        Text(text),
-                        TextFont::from_font_size(40.0),
-                        TextColor(BUTTON_TEXT),
-                        // Don't bubble picking events from the text up to the button.
-                        Pickable::IGNORE,
-                    )],
+                    TextColor(BUTTON_TEXT),
                 ))
-                .insert(button_bundle)
                 .observe(action);
         })),
     )
+}
+
+/// Add font family to button
+pub(super) fn add_font_to_button(
+    button_fonts: Query<&mut TextFont, Added<TextFont>>,
+    asset_server: Res<AssetServer>,
+) {
+    for mut font in button_fonts {
+        font.font = asset_server.load("fonts/monogram.ttf");
+    }
 }

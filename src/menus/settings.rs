@@ -4,7 +4,7 @@
 
 use bevy::{audio::Volume, input::common_conditions::input_just_pressed, prelude::*};
 
-use crate::{menus::Menu, screens::Screen, theme::prelude::*};
+use crate::{camera::LevelPosition, menus::Menu, screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Menu::Settings), spawn_settings_menu);
@@ -19,7 +19,12 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-fn spawn_settings_menu(mut commands: Commands) {
+fn spawn_settings_menu(
+    mut commands: Commands,
+    mut camera: Single<&mut LevelPosition, With<Camera2d>>,
+) {
+    **camera = LevelPosition::new(0, 1);
+
     commands.spawn((
         widget::ui_root("Settings Menu"),
         GlobalZIndex(2),

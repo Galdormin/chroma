@@ -15,5 +15,6 @@ pub mod prelude {
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(interaction::plugin);
+    app.add_plugins(interaction::plugin)
+        .add_systems(Update, widget::add_font_to_button);
 }
