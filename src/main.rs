@@ -9,8 +9,8 @@ mod camera;
 mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
+mod ldtk;
 mod menus;
-mod plateformer;
 mod screens;
 mod theme;
 
@@ -67,7 +67,7 @@ impl Plugin for AppPlugin {
             #[cfg(feature = "dev")]
             dev_tools::plugin,
             menus::plugin,
-            plateformer::plugin,
+            ldtk::plugin,
             screens::plugin,
             theme::plugin,
         ));

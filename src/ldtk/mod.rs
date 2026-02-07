@@ -1,4 +1,4 @@
-//!
+//! Module for LDtk bundles
 
 use bevy::prelude::*;
 

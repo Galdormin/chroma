@@ -8,6 +8,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_observer(apply_interaction_palette_on_out);
     app.add_observer(apply_interaction_palette_on_release);
 
+    app.add_observer(apply_selection_markers_on_over);
+    app.add_observer(apply_selection_markers_on_out);
+
     app.add_observer(play_sound_effect_on_click);
     app.add_observer(play_sound_effect_on_over);
 }
@@ -21,6 +24,13 @@ pub struct InteractionPalette {
     pub none: Color,
     pub hovered: Color,
     pub pressed: Color,
+}
+
+/// Optional hover marker text for a button label.
+#[derive(Component, Debug, Reflect)]
+#[reflect(Component)]
+pub struct SelectionMarkerText {
+    pub base: String,
 }
 
 fn apply_interaction_palette_on_click(
@@ -65,6 +75,28 @@ fn apply_interaction_palette_on_out(
     };
 
     *text = palette.none.into();
+}
+
+fn apply_selection_markers_on_over(
+    over: On<Pointer<Over>>,
+    mut marker_query: Query<(&SelectionMarkerText, &mut Text)>,
+) {
+    let Ok((marker, mut text)) = marker_query.get_mut(over.event_target()) else {
+        return;
+    };
+
+    text.0 = format!("> {} <", marker.base);
+}
+
+fn apply_selection_markers_on_out(
+    out: On<Pointer<Out>>,
+    mut marker_query: Query<(&SelectionMarkerText, &mut Text)>,
+) {
+    let Ok((marker, mut text)) = marker_query.get_mut(out.event_target()) else {
+        return;
+    };
+
+    text.0 = marker.base.clone();
 }
 
 fn play_sound_effect_on_click(

@@ -7,7 +7,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::theme::{interaction::InteractionPalette, palette::*};
+use crate::theme::{interaction::InteractionPalette, interaction::SelectionMarkerText, palette::*};
 
 /// A root UI node that fills the window and centers its content.
 pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
@@ -58,6 +58,7 @@ where
     button_base(
         text,
         action,
+        true,
         Node {
             width: px(150),
             height: px(20),
@@ -79,6 +80,7 @@ where
     button_base(
         text,
         action,
+        false,
         Node {
             width: px(20),
             height: px(20),
@@ -93,6 +95,7 @@ where
 fn button_base<E, B, M, I>(
     text: impl Into<String>,
     action: I,
+    with_markers: bool,
     button_bundle: impl Bundle,
 ) -> impl Bundle
 where
@@ -105,20 +108,22 @@ where
     (
         Name::new("Button"),
         button_bundle,
-        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
-            parent
-                .spawn((
-                    Name::new("Button Text"),
-                    Text(text),
-                    TextFont::from_font_size(24.0),
-                    InteractionPalette {
-                        none: BUTTON_TEXT,
-                        hovered: GREEN,
-                        pressed: GREEN,
-                    },
-                    TextColor(BUTTON_TEXT),
-                ))
-                .observe(action);
+        Children::spawn(SpawnWith(move |parent: &mut ChildSpawner| {
+            let mut text_entity = parent.spawn((
+                Name::new("Button Text"),
+                Text(text.clone()),
+                TextFont::from_font_size(24.0),
+                InteractionPalette {
+                    none: BUTTON_TEXT,
+                    hovered: GREEN,
+                    pressed: GREEN,
+                },
+                TextColor(BUTTON_TEXT),
+            ));
+            if with_markers {
+                text_entity.insert(SelectionMarkerText { base: text });
+            }
+            text_entity.observe(action);
         })),
     )
 }
