@@ -97,18 +97,14 @@ fn volume_widget(volume_type: VolumeType) -> impl Bundle {
 const MIN_VOLUME: f32 = 0.0;
 const MAX_VOLUME: f32 = 3.0;
 
-fn lower_volume(
-    volume_type: VolumeType,
-) -> impl Fn(On<Pointer<Click>>, ResMut<AudioSettings>) -> () {
+fn lower_volume(volume_type: VolumeType) -> impl Fn(On<Pointer<Click>>, ResMut<AudioSettings>) {
     move |_: On<Pointer<Click>>, mut audio_settings: ResMut<AudioSettings>| {
         let volume = (audio_settings.get_volume(volume_type) - 0.1).max(MIN_VOLUME);
         audio_settings.set_volume(volume_type, volume);
     }
 }
 
-fn raise_volume(
-    volume_type: VolumeType,
-) -> impl Fn(On<Pointer<Click>>, ResMut<AudioSettings>) -> () {
+fn raise_volume(volume_type: VolumeType) -> impl Fn(On<Pointer<Click>>, ResMut<AudioSettings>) {
     move |_: On<Pointer<Click>>, mut audio_settings: ResMut<AudioSettings>| {
         let volume = (audio_settings.get_volume(volume_type) + 0.1).min(MAX_VOLUME);
         audio_settings.set_volume(volume_type, volume);

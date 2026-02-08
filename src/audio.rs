@@ -15,18 +15,18 @@ pub enum VolumeType {
     Sfx,
 }
 
-impl ToString for VolumeType {
-    fn to_string(&self) -> String {
-        match self {
+impl std::fmt::Display for VolumeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let text = match self {
             VolumeType::Master => "Master",
             VolumeType::Music => "Music",
             VolumeType::Sfx => "SFX",
-        }
-        .into()
+        };
+        f.write_str(text)
     }
 }
 
-/// Taken and adapted from https://github.com/benfrankel/pyri_new_jam/blob/main/src/core/audio.rs
+/// Taken and adapted from <https://github.com/benfrankel/pyri_new_jam/blob/main/src/core/audio.rs>
 #[derive(Resource, Reflect, Clone, Debug)]
 #[reflect(Resource)]
 pub struct AudioSettings {
