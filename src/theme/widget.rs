@@ -89,7 +89,7 @@ where
         action,
         true,
         Node {
-            width: px(150),
+            width: px(200),
             height: px(20),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,

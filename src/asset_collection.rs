@@ -39,10 +39,8 @@ pub struct PlayerAssets {
 #[derive(AssetCollection, Resource)]
 pub struct AudioAssets {
     // Musics
-    #[asset(path = "audio/music/Monkeys Spinning Monkeys.ogg")]
-    pub credit_music: Handle<AudioSource>,
-    #[asset(path = "audio/music/Fluffing A Duck.ogg")]
-    pub game_music: Handle<AudioSource>,
+    #[asset(path = "audio/music/exploration.ogg")]
+    pub main_music: Handle<AudioSource>,
 
     // SFX
     #[asset(

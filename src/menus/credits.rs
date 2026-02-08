@@ -2,10 +2,7 @@
 
 use bevy::{ecs::spawn::SpawnIter, input::common_conditions::input_just_pressed, prelude::*};
 
-use crate::{
-    asset_collection::AudioAssets, audio::music, camera::LevelPosition, menus::Menu,
-    theme::prelude::*,
-};
+use crate::{camera::LevelPosition, menus::Menu, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Menu::Credits), spawn_credits_menu);
@@ -13,8 +10,6 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         go_back.run_if(in_state(Menu::Credits).and(input_just_pressed(KeyCode::Escape))),
     );
-
-    app.add_systems(OnEnter(Menu::Credits), start_credits_music);
 }
 
 fn spawn_credits_menu(
@@ -45,7 +40,7 @@ fn assets() -> impl Bundle {
     grid(vec![
         ["Ducky sprite", "CC0 by Caz Creates Games"],
         ["Button SFX", "CC0 by Jaszunio15"],
-        ["Music", "CC BY 3.0 by Kevin MacLeod"],
+        ["Music", "Exploration by Ansimuz"],
         ["Bevy logo", "All rights reserved by the Bevy Foundation"],
     ])
 }
@@ -55,9 +50,10 @@ fn grid(content: Vec<[&'static str; 2]>) -> impl Bundle {
         Name::new("Grid"),
         Node {
             display: Display::Grid,
+            width: percent(75),
             row_gap: px(0),
             column_gap: px(20),
-            grid_template_columns: RepeatedGridTrack::px(2, 200.0),
+            grid_template_columns: vec![GridTrack::px(100.0), GridTrack::flex(1.0)],
             ..default()
         },
         Children::spawn(SpawnIter(content.into_iter().flatten().enumerate().map(
@@ -84,12 +80,4 @@ fn go_back_on_click(_: On<Pointer<Click>>, mut next_menu: ResMut<NextState<Menu>
 
 fn go_back(mut next_menu: ResMut<NextState<Menu>>) {
     next_menu.set(Menu::Main);
-}
-
-fn start_credits_music(mut commands: Commands, audio_assets: Res<AudioAssets>) {
-    commands.spawn((
-        Name::new("Credits Music"),
-        DespawnOnExit(Menu::Credits),
-        music(audio_assets.credit_music.clone()),
-    ));
 }

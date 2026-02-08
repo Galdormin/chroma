@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use rand::seq::IndexedRandom;
 
-use crate::{asset_collection::AudioAssets, audio::sound_effect};
+use crate::{
+    asset_collection::AudioAssets,
+    audio::{AudioSettings, sound_effect},
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(apply_interaction_palette_on_over);
@@ -80,14 +83,22 @@ fn play_sound_effect_on_click(
     _: On<Pointer<Click>>,
     audio_assets: If<Res<AudioAssets>>,
     mut commands: Commands,
+    audio_settings: Res<AudioSettings>,
 ) {
-    commands.spawn(sound_effect(audio_assets.click_sound.clone()));
+    commands.spawn(sound_effect(
+        audio_assets.click_sound.clone(),
+        &audio_settings,
+    ));
 }
 
 fn play_sound_effect_on_over(
     _: On<Pointer<Over>>,
     audio_assets: If<Res<AudioAssets>>,
     mut commands: Commands,
+    audio_settings: Res<AudioSettings>,
 ) {
-    commands.spawn(sound_effect(audio_assets.hover_sound.clone()));
+    commands.spawn(sound_effect(
+        audio_assets.hover_sound.clone(),
+        &audio_settings,
+    ));
 }

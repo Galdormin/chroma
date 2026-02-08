@@ -9,7 +9,9 @@ use rand::prelude::*;
 use std::time::Duration;
 
 use crate::{
-    AppSystems, PausableSystems, asset_collection::AudioAssets, audio::sound_effect,
+    AppSystems, PausableSystems,
+    asset_collection::AudioAssets,
+    audio::{AudioSettings, sound_effect},
     demo::movement::MovementController,
 };
 
@@ -75,6 +77,7 @@ fn trigger_step_sound_effect(
     mut commands: Commands,
     audio_assets: If<Res<AudioAssets>>,
     mut step_query: Query<&PlayerAnimation>,
+    audio_settings: Res<AudioSettings>,
 ) {
     for animation in &mut step_query {
         if animation.state == PlayerAnimationState::Walking
@@ -83,7 +86,7 @@ fn trigger_step_sound_effect(
         {
             let rng = &mut rand::rng();
             let random_step = audio_assets.step_sfx.choose(rng).unwrap().clone();
-            commands.spawn(sound_effect(random_step));
+            commands.spawn(sound_effect(random_step, &audio_settings));
         }
     }
 }
