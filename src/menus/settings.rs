@@ -63,7 +63,7 @@ fn settings_grid() -> impl Bundle {
 
 fn volume_label(volume_type: VolumeType) -> impl Bundle {
     (
-        widget::label(format!("{} Volume", volume_type.to_string())),
+        widget::label(format!("{} Volume", volume_type)),
         Node {
             justify_self: JustifySelf::End,
             ..default()
