@@ -4,13 +4,14 @@ use bevy::prelude::*;
 
 use bevy_asset_loader::prelude::*;
 use bevy_ecs_ldtk::assets::LdtkProject;
+use iyes_progress::ProgressPlugin;
 
 use crate::screens::Screen;
 
 pub(super) fn plugin(app: &mut App) {
+    app.add_plugins(ProgressPlugin::<Screen>::new());
     app.add_loading_state(
-        LoadingState::new(Screen::Loading)
-            .continue_to_state(Screen::Title)
+        LoadingState::new(Screen::Splash)
             .load_collection::<AudioAssets>()
             .load_collection::<LevelAssets>()
             .load_collection::<PlayerAssets>()
