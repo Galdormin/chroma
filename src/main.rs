@@ -3,16 +3,19 @@
 // Disable console on Windows for non-dev builds.
 #![cfg_attr(not(feature = "dev"), windows_subsystem = "windows")]
 
-mod asset_tracking;
+mod asset_collection;
 mod audio;
+mod camera;
 mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
+mod ldtk;
 mod menus;
 mod screens;
 mod theme;
 
-use bevy::{asset::AssetMetaCheck, prelude::*};
+use bevy::{asset::AssetMetaCheck, prelude::*, window::WindowResolution};
+use bevy_ecs_ldtk::{LdtkPlugin, LdtkSettings, LevelSelection};
 
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
@@ -23,7 +26,7 @@ pub struct AppPlugin;
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
         // Add Bevy plugins.
-        app.add_plugins(
+        app.add_plugins((
             DefaultPlugins
                 .set(AssetPlugin {
                     // Wasm builds will check for meta files (that don't exist) if this isn't set.
@@ -36,21 +39,35 @@ impl Plugin for AppPlugin {
                     primary_window: Window {
                         title: "Chroma".to_string(),
                         fit_canvas_to_parent: true,
+                        resolution: WindowResolution::new(1024, 576),
                         ..default()
                     }
                     .into(),
                     ..default()
-                }),
-        );
+                })
+                .set(ImagePlugin::default_nearest()),
+            LdtkPlugin,
+        ));
+
+        // Configure LdtkSettings
+        app.insert_resource(LevelSelection::index(0))
+            .insert_resource(LdtkSettings {
+                level_spawn_behavior: bevy_ecs_ldtk::LevelSpawnBehavior::UseWorldTranslation {
+                    load_level_neighbors: true,
+                },
+                ..default()
+            });
 
         // Add other plugins.
         app.add_plugins((
-            asset_tracking::plugin,
+            asset_collection::plugin,
             audio::plugin,
+            camera::plugin,
             demo::plugin,
             #[cfg(feature = "dev")]
             dev_tools::plugin,
             menus::plugin,
+            ldtk::plugin,
             screens::plugin,
             theme::plugin,
         ));
@@ -69,9 +86,6 @@ impl Plugin for AppPlugin {
         // Set up the `Pause` state.
         app.init_state::<Pause>();
         app.configure_sets(Update, PausableSystems.run_if(in_state(Pause(false))));
-
-        // Spawn the main camera.
-        app.add_systems(Startup, spawn_camera);
     }
 }
 
@@ -95,7 +109,3 @@ struct Pause(pub bool);
 /// A system set for systems that shouldn't run while the game is paused.
 #[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]
 struct PausableSystems;
-
-fn spawn_camera(mut commands: Commands) {
-    commands.spawn((Name::new("Camera"), Camera2d));
-}

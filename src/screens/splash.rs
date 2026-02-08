@@ -5,6 +5,7 @@ use bevy::{
     input::common_conditions::input_just_pressed,
     prelude::*,
 };
+use iyes_progress::ProgressTracker;
 
 use crate::{AppSystems, screens::Screen, theme::prelude::*};
 
@@ -38,7 +39,7 @@ pub(super) fn plugin(app: &mut App) {
     // Exit the splash screen early if the player hits escape.
     app.add_systems(
         Update,
-        enter_title_screen
+        enter_loading_or_title_screen
             .run_if(input_just_pressed(KeyCode::Escape).and(in_state(Screen::Splash))),
     );
 }
@@ -136,10 +137,17 @@ fn tick_splash_timer(time: Res<Time>, mut timer: ResMut<SplashTimer>) {
 
 fn check_splash_timer(timer: ResMut<SplashTimer>, mut next_screen: ResMut<NextState<Screen>>) {
     if timer.0.just_finished() {
-        next_screen.set(Screen::Title);
+        next_screen.set(Screen::Loading);
     }
 }
 
-fn enter_title_screen(mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Title);
+fn enter_loading_or_title_screen(
+    mut next_screen: ResMut<NextState<Screen>>,
+    progress: Res<ProgressTracker<Screen>>,
+) {
+    if progress.is_ready() {
+        next_screen.set(Screen::Title);
+    } else {
+        next_screen.set(Screen::Loading);
+    }
 }

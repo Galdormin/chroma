@@ -2,16 +2,13 @@
 //! This reduces stuttering, especially for audio on Wasm.
 
 use bevy::prelude::*;
+use iyes_progress::ProgressTracker;
 
-use crate::{asset_tracking::ResourceHandles, screens::Screen, theme::prelude::*};
+use crate::{screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Loading), spawn_loading_screen);
-
-    app.add_systems(
-        Update,
-        enter_gameplay_screen.run_if(in_state(Screen::Loading).and(all_assets_loaded)),
-    );
+    app.add_systems(Update, enter_title_screen.run_if(in_state(Screen::Loading)));
 }
 
 fn spawn_loading_screen(mut commands: Commands) {
@@ -22,10 +19,11 @@ fn spawn_loading_screen(mut commands: Commands) {
     ));
 }
 
-fn enter_gameplay_screen(mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Gameplay);
-}
-
-fn all_assets_loaded(resource_handles: Res<ResourceHandles>) -> bool {
-    resource_handles.is_all_done()
+fn enter_title_screen(
+    mut next_screen: ResMut<NextState<Screen>>,
+    progress: Res<ProgressTracker<Screen>>,
+) {
+    if progress.is_ready() {
+        next_screen.set(Screen::Title);
+    }
 }

@@ -1,26 +1,28 @@
 [package]
 name = "chroma"
-authors = ["Galdormin <theoplenet@gmail.com>"]
+authors = [ "Galdormin <theoplenet@gmail.com>" ]
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 bevy = { version = "0.18" }
+bevy_asset_loader = { version = "0.25.0", features = [ "progress_tracking", "2d" ] }
+bevy_ecs_ldtk = "0.14.0"
+bevy_modern_pixel_camera = "0.5.1"
+iyes_progress = "0.16.0"
 rand = "0.9"
+
 # Compile out low-severity logs to improve performance.
 # Remove these features if you want to profile your game with tracy.
 # (see <https://github.com/bevyengine/bevy/blob/main/docs/profiling.md#tracy-profiler>)
-tracing = { version = "0.1", features = [
-    "max_level_debug",
-    "release_max_level_warn",
-] }
+tracing = { version = "0.1", features = [ "max_level_debug", "release_max_level_warn" ] }
 
 [target.wasm32-unknown-unknown.dependencies]
-getrandom = { version = "0.3", features = ["wasm_js"] }
+getrandom = { version = "0.3", features = [ "wasm_js" ] }
 
 [features]
 # Default to a native dev build.
-default = ["dev_native"]
+default = [ "dev_native" ]
 dev = [
     # Improve compile times for dev builds by linking Bevy as a dynamic library.
     "bevy/dynamic_linking",
@@ -28,6 +30,7 @@ dev = [
     "bevy/bevy_ui_debug",
     # Improve error messages coming from Bevy
     "bevy/track_location",
+    "bevy/debug",
 ]
 dev_native = [
     "dev",
@@ -36,7 +39,6 @@ dev_native = [
     # Enable embedded asset hot reloading for native dev builds.
     "bevy/embedded_watcher",
 ]
-
 
 [package.metadata.bevy_cli.release]
 # Disable dev features for release builds.
@@ -47,12 +49,11 @@ default-features = false
 default-features = false
 
 [package.metadata.bevy_cli.web.dev]
-features = ["dev"]
-
+features = [ "dev" ]
 
 [lints.rust]
 # Mark `bevy_lint` as a valid `cfg`, as it is set when the Bevy linter runs.
-unexpected_cfgs = { level = "warn", check-cfg = ["cfg(bevy_lint)"] }
+unexpected_cfgs = { level = "warn", check-cfg = [ "cfg(bevy_lint)" ] }
 
 [lints.clippy]
 # Bevy supplies arguments to systems via dependency injection, so it's natural for systems to
@@ -68,7 +69,6 @@ nonstandard_macro_braces = "warn"
 [package.metadata.bevy_lint]
 # panicking_methods = "deny"
 # pedantic = "warn"
-
 
 # Compile with Performance Optimizations:
 # <https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations>

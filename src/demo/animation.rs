@@ -10,8 +10,9 @@ use std::time::Duration;
 
 use crate::{
     AppSystems, PausableSystems,
-    audio::sound_effect,
-    demo::{movement::MovementController, player::PlayerAssets},
+    asset_collection::AudioAssets,
+    audio::{AudioSettings, sound_effect},
+    demo::movement::MovementController,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -74,8 +75,9 @@ fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut Sprite)>) {
 /// animation.
 fn trigger_step_sound_effect(
     mut commands: Commands,
-    player_assets: If<Res<PlayerAssets>>,
+    audio_assets: If<Res<AudioAssets>>,
     mut step_query: Query<&PlayerAnimation>,
+    audio_settings: Res<AudioSettings>,
 ) {
     for animation in &mut step_query {
         if animation.state == PlayerAnimationState::Walking
@@ -83,8 +85,8 @@ fn trigger_step_sound_effect(
             && (animation.frame == 2 || animation.frame == 5)
         {
             let rng = &mut rand::rng();
-            let random_step = player_assets.steps.choose(rng).unwrap().clone();
-            commands.spawn(sound_effect(random_step));
+            let random_step = audio_assets.step_sfx.choose(rng).unwrap().clone();
+            commands.spawn(sound_effect(random_step, &audio_settings));
         }
     }
 }

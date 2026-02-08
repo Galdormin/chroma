@@ -7,7 +7,13 @@ use bevy::{
     prelude::*,
 };
 
-use crate::theme::{interaction::InteractionPalette, palette::*};
+use crate::{
+    asset_collection::UiAssets,
+    theme::{
+        interaction::{InteractionPalette, SelectionMarkerText},
+        palette::*,
+    },
+};
 
 /// A root UI node that fills the window and centers its content.
 pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
@@ -20,7 +26,7 @@ pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             flex_direction: FlexDirection::Column,
-            row_gap: px(20),
+            row_gap: px(5),
             ..default()
         },
         // Don't block picking events for other UI roots.
@@ -33,7 +39,7 @@ pub fn header(text: impl Into<String>) -> impl Bundle {
     (
         Name::new("Header"),
         Text(text.into()),
-        TextFont::from_font_size(40.0),
+        TextFont::from_font_size(24.0),
         TextColor(HEADER_TEXT),
     )
 }
@@ -43,8 +49,31 @@ pub fn label(text: impl Into<String>) -> impl Bundle {
     (
         Name::new("Label"),
         Text(text.into()),
-        TextFont::from_font_size(24.0),
+        TextFont::from_font_size(16.0),
         TextColor(LABEL_TEXT),
+    )
+}
+
+/// An Image node
+pub fn image(image: Handle<Image>, width: Val) -> impl Bundle {
+    (
+        Name::new("Image"),
+        Node {
+            width,
+            ..Default::default()
+        },
+        ImageNode::new(image),
+    )
+}
+
+/// A horizontal space
+pub fn hspace(height: Val) -> impl Bundle {
+    (
+        Name::new("Hspace"),
+        Node {
+            height,
+            ..Default::default()
+        },
     )
 }
 
@@ -58,9 +87,10 @@ where
     button_base(
         text,
         action,
+        true,
         Node {
-            width: px(380),
-            height: px(80),
+            width: px(200),
+            height: px(20),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             border_radius: BorderRadius::MAX,
@@ -79,9 +109,10 @@ where
     button_base(
         text,
         action,
+        false,
         Node {
-            width: px(30),
-            height: px(30),
+            width: px(20),
+            height: px(20),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             ..default()
@@ -93,6 +124,7 @@ where
 fn button_base<E, B, M, I>(
     text: impl Into<String>,
     action: I,
+    with_markers: bool,
     button_bundle: impl Bundle,
 ) -> impl Bundle
 where
@@ -104,29 +136,32 @@ where
     let action = IntoObserverSystem::into_system(action);
     (
         Name::new("Button"),
-        Node::default(),
-        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
-            parent
-                .spawn((
-                    Name::new("Button Inner"),
-                    Button,
-                    BackgroundColor(BUTTON_BACKGROUND),
-                    InteractionPalette {
-                        none: BUTTON_BACKGROUND,
-                        hovered: BUTTON_HOVERED_BACKGROUND,
-                        pressed: BUTTON_PRESSED_BACKGROUND,
-                    },
-                    children![(
-                        Name::new("Button Text"),
-                        Text(text),
-                        TextFont::from_font_size(40.0),
-                        TextColor(BUTTON_TEXT),
-                        // Don't bubble picking events from the text up to the button.
-                        Pickable::IGNORE,
-                    )],
-                ))
-                .insert(button_bundle)
-                .observe(action);
+        button_bundle,
+        Children::spawn(SpawnWith(move |parent: &mut ChildSpawner| {
+            let mut text_entity = parent.spawn((
+                Name::new("Button Text"),
+                Text(text.clone()),
+                TextFont::from_font_size(24.0),
+                InteractionPalette {
+                    none: BUTTON_TEXT,
+                    hovered: BIOME_COLORS.into(),
+                },
+                TextColor(BUTTON_TEXT),
+            ));
+            if with_markers {
+                text_entity.insert(SelectionMarkerText { base: text });
+            }
+            text_entity.observe(action);
         })),
     )
+}
+
+/// Add font family to button
+pub(super) fn add_font_to_button(
+    button_fonts: Query<&mut TextFont, Added<TextFont>>,
+    ui_assets: Res<UiAssets>,
+) {
+    for mut font in button_fonts {
+        font.font = ui_assets.main_font.clone();
+    }
 }
