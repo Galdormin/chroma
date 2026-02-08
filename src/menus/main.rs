@@ -2,13 +2,19 @@
 
 use bevy::prelude::*;
 
-use crate::{camera::LevelPosition, menus::Menu, screens::Screen, theme::widget};
+use crate::{
+    asset_collection::UiAssets, camera::LevelPosition, menus::Menu, screens::Screen, theme::widget,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Menu::Main), spawn_main_menu);
 }
 
-fn spawn_main_menu(mut commands: Commands, mut camera: Single<&mut LevelPosition, With<Camera2d>>) {
+fn spawn_main_menu(
+    mut commands: Commands,
+    mut camera: Single<&mut LevelPosition, With<Camera2d>>,
+    ui_assets: Res<UiAssets>,
+) {
     **camera = LevelPosition::new(0, 0);
 
     commands.spawn((
@@ -17,6 +23,8 @@ fn spawn_main_menu(mut commands: Commands, mut camera: Single<&mut LevelPosition
         DespawnOnExit(Menu::Main),
         #[cfg(not(target_family = "wasm"))]
         children![
+            widget::image(ui_assets.title_art.clone(), Val::Auto),
+            widget::hspace(px(20)),
             widget::button("Play", enter_gameplay_screen),
             widget::button("Settings", open_settings_menu),
             widget::button("Credits", open_credits_menu),
@@ -24,6 +32,7 @@ fn spawn_main_menu(mut commands: Commands, mut camera: Single<&mut LevelPosition
         ],
         #[cfg(target_family = "wasm")]
         children![
+            widget::image(ui_assets.title_art.clone(), Val::Auto),
             widget::button("Play", enter_gameplay_screen),
             widget::button("Settings", open_settings_menu),
             widget::button("Credits", open_credits_menu),

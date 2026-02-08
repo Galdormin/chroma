@@ -13,7 +13,8 @@ pub(super) fn plugin(app: &mut App) {
             .continue_to_state(Screen::Title)
             .load_collection::<AudioAssets>()
             .load_collection::<LevelAssets>()
-            .load_collection::<PlayerAssets>(),
+            .load_collection::<PlayerAssets>()
+            .load_collection::<UiAssets>(),
     );
 }
 
@@ -59,6 +60,17 @@ pub struct AudioAssets {
     pub hover_sound: Handle<AudioSource>,
     #[asset(path = "audio/sound_effects/button_click.ogg")]
     pub click_sound: Handle<AudioSource>,
+}
+
+#[derive(AssetCollection, Resource)]
+pub struct UiAssets {
+    // Images
+    #[asset(path = "images/chroma_title.png")]
+    pub title_art: Handle<Image>,
+
+    // Fonts
+    #[asset(path = "fonts/monogram.ttf")]
+    pub main_font: Handle<Font>,
 }
 
 #[derive(AssetCollection, Resource)]

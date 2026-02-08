@@ -7,7 +7,13 @@ use bevy::{
     prelude::*,
 };
 
-use crate::theme::{interaction::InteractionPalette, interaction::SelectionMarkerText, palette::*};
+use crate::{
+    asset_collection::UiAssets,
+    theme::{
+        interaction::{InteractionPalette, SelectionMarkerText},
+        palette::*,
+    },
+};
 
 /// A root UI node that fills the window and centers its content.
 pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
@@ -45,6 +51,29 @@ pub fn label(text: impl Into<String>) -> impl Bundle {
         Text(text.into()),
         TextFont::from_font_size(16.0),
         TextColor(LABEL_TEXT),
+    )
+}
+
+/// An Image node
+pub fn image(image: Handle<Image>, width: Val) -> impl Bundle {
+    (
+        Name::new("Image"),
+        Node {
+            width,
+            ..Default::default()
+        },
+        ImageNode::new(image),
+    )
+}
+
+/// A horizontal space
+pub fn hspace(height: Val) -> impl Bundle {
+    (
+        Name::new("Hspace"),
+        Node {
+            height,
+            ..Default::default()
+        },
     )
 }
 
@@ -115,8 +144,7 @@ where
                 TextFont::from_font_size(24.0),
                 InteractionPalette {
                     none: BUTTON_TEXT,
-                    hovered: GREEN,
-                    pressed: GREEN,
+                    hovered: BIOME_COLORS.into(),
                 },
                 TextColor(BUTTON_TEXT),
             ));
@@ -131,9 +159,9 @@ where
 /// Add font family to button
 pub(super) fn add_font_to_button(
     button_fonts: Query<&mut TextFont, Added<TextFont>>,
-    asset_server: Res<AssetServer>,
+    ui_assets: Res<UiAssets>,
 ) {
     for mut font in button_fonts {
-        font.font = asset_server.load("fonts/monogram.ttf");
+        font.font = ui_assets.main_font.clone();
     }
 }

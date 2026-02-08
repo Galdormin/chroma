@@ -23,6 +23,9 @@ pub const RED: Color = Color::srgb_u8(240, 91, 91);
 /// #df8c50
 pub const YELLOW: Color = Color::srgb_u8(233, 140, 80);
 
+/// All biome colors
+pub const BIOME_COLORS: &[Color] = &[GREY, GREEN, BROWN, RED, YELLOW];
+
 /* === UI COLORS === */
 
 pub const LABEL_TEXT: Color = YELLOW;

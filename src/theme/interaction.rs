@@ -1,12 +1,11 @@
 use bevy::prelude::*;
+use rand::seq::IndexedRandom;
 
 use crate::{asset_collection::AudioAssets, audio::sound_effect};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_observer(apply_interaction_palette_on_click);
     app.add_observer(apply_interaction_palette_on_over);
     app.add_observer(apply_interaction_palette_on_out);
-    app.add_observer(apply_interaction_palette_on_release);
 
     app.add_observer(apply_selection_markers_on_over);
     app.add_observer(apply_selection_markers_on_out);
@@ -15,44 +14,21 @@ pub(super) fn plugin(app: &mut App) {
     app.add_observer(play_sound_effect_on_over);
 }
 
-/// Palette for widget interactions. Add this to an entity that supports
-/// [`Interaction`]s, such as a button, to change its [`BackgroundColor`] based
-/// on the current interaction state.
+/// Change the [`TextColor`] based on the current [`Interaction`]` state.
+/// The color is chosen randomly on over.
 #[derive(Component, Debug, Reflect)]
 #[reflect(Component)]
 pub struct InteractionPalette {
     pub none: Color,
-    pub hovered: Color,
-    pub pressed: Color,
+    pub hovered: Vec<Color>,
 }
 
-/// Optional hover marker text for a button label.
+/// Add `>` and `<` around the selected button when hovered.
 #[derive(Component, Debug, Reflect)]
 #[reflect(Component)]
 pub struct SelectionMarkerText {
+    /// Base text of the button to store.
     pub base: String,
-}
-
-fn apply_interaction_palette_on_click(
-    click: On<Pointer<Click>>,
-    mut palette_query: Query<(&InteractionPalette, &mut TextColor)>,
-) {
-    let Ok((palette, mut text)) = palette_query.get_mut(click.event_target()) else {
-        return;
-    };
-
-    *text = palette.pressed.into();
-}
-
-fn apply_interaction_palette_on_release(
-    click: On<Pointer<Release>>,
-    mut palette_query: Query<(&InteractionPalette, &mut TextColor)>,
-) {
-    let Ok((palette, mut text)) = palette_query.get_mut(click.event_target()) else {
-        return;
-    };
-
-    *text = palette.hovered.into();
 }
 
 fn apply_interaction_palette_on_over(
@@ -63,7 +39,8 @@ fn apply_interaction_palette_on_over(
         return;
     };
 
-    *text = palette.hovered.into();
+    let rng = &mut rand::rng();
+    *text = palette.hovered.choose(rng).unwrap().to_owned().into();
 }
 
 fn apply_interaction_palette_on_out(
