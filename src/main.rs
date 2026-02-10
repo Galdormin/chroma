@@ -6,14 +6,15 @@
 mod asset_collection;
 mod audio;
 mod camera;
-mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod ldtk;
 mod menus;
+mod player;
 mod screens;
 mod theme;
 
+use avian2d::{PhysicsPlugins, prelude::PhysicsLayer};
 use bevy::{asset::AssetMetaCheck, prelude::*, window::WindowResolution};
 use bevy_ecs_ldtk::{LdtkPlugin, LdtkSettings, LevelSelection};
 
@@ -47,6 +48,7 @@ impl Plugin for AppPlugin {
                 })
                 .set(ImagePlugin::default_nearest()),
             LdtkPlugin,
+            PhysicsPlugins::default().with_length_unit(16.0),
         ));
 
         // Configure LdtkSettings
@@ -63,11 +65,11 @@ impl Plugin for AppPlugin {
             asset_collection::plugin,
             audio::plugin,
             camera::plugin,
-            demo::plugin,
             #[cfg(feature = "dev")]
             dev_tools::plugin,
-            menus::plugin,
             ldtk::plugin,
+            menus::plugin,
+            player::plugin,
             screens::plugin,
             theme::plugin,
         ));
@@ -109,3 +111,13 @@ struct Pause(pub bool);
 /// A system set for systems that shouldn't run while the game is paused.
 #[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]
 struct PausableSystems;
+
+/// [`PhysicsLayer`] of the game
+#[derive(PhysicsLayer, Default)]
+pub enum GameLayer {
+    #[default]
+    Default, // Layer 0 - the default layer that objects are assigned to
+    Player, // Layer 1
+    Ground, // Layer 2
+    Sensor, // Layer 3
+}
