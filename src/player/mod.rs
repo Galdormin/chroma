@@ -3,15 +3,19 @@
 use bevy::prelude::*;
 
 use crate::{
-    player::{movement::CharacterMovementBundle, physics::CharacterPhysicsBundle},
-    theme::palette::WHITE,
+    ldtk::wall::Tint,
+    player::{
+        movement::CharacterMovementBundle, physics::CharacterPhysicsBundle,
+        visual::CharacterVisualBundle,
+    },
 };
 
 pub mod movement;
 pub mod physics;
+pub mod visual;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins((movement::plugin, physics::plugin));
+    app.add_plugins((movement::plugin, physics::plugin, visual::plugin));
 
     app.add_systems(
         FixedUpdate,
@@ -31,17 +35,16 @@ pub struct Player;
 
 pub fn spawn_character(
     mut commands: Commands,
-    mut material_asets: ResMut<Assets<ColorMaterial>>,
-    mut mesh_assets: ResMut<Assets<Mesh>>,
+    material_asets: ResMut<Assets<ColorMaterial>>,
+    mesh_assets: ResMut<Assets<Mesh>>,
 ) {
     let shape = Capsule2d::new(8.0, 10.0);
 
     commands.spawn((
         Player,
-        Mesh2d(mesh_assets.add(shape)),
-        MeshMaterial2d(material_asets.add(WHITE)),
+        CharacterVisualBundle::new(shape, Tint::White, mesh_assets, material_asets),
         CharacterMovementBundle::new(10.0, 4.0, 0.3, 0.3),
         CharacterPhysicsBundle::new(shape),
-        Transform::from_xyz(765.0, -130.0, 1.0),
+        Transform::from_xyz(765.0, -130.0, 3.0),
     ));
 }

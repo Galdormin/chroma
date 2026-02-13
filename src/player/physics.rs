@@ -4,7 +4,11 @@ use avian2d::{
 };
 use bevy::prelude::*;
 
-use crate::{GameLayer, ldtk::wall::Wall, player::Player};
+use crate::{
+    GameLayer,
+    ldtk::wall::{Tint, Wall},
+    player::Player,
+};
 
 pub(super) fn plugin(_app: &mut App) {}
 
@@ -53,14 +57,18 @@ impl CharacterPhysicsBundle {
 /// Updates the [`Grounded`] status for character controllers.
 pub(super) fn update_grounded(
     mut commands: Commands,
-    mut query: Query<(Entity, &ShapeHits), With<Player>>,
-    walls: Query<Entity, With<Wall>>,
+    mut query: Query<(Entity, &ShapeHits, &Tint), With<Player>>,
+    walls: Query<&Tint, With<Wall>>,
 ) {
-    for (entity, hits) in &mut query {
+    for (entity, hits, player_tint) in &mut query {
         // // Filter hits on wall
         let hits = hits
             .iter()
-            .filter(|hit_data| walls.contains(hit_data.entity))
+            .filter(|hit_data| {
+                walls
+                    .get(hit_data.entity)
+                    .is_ok_and(|hit_tint| hit_tint != player_tint)
+            })
             .collect::<Vec<&ShapeHitData>>();
 
         // The character is grounded if the shape caster has a hit
@@ -77,11 +85,26 @@ pub(super) fn update_grounded(
 /// This replaces Avian's default "position integration" that moves kinematic bodies based on their
 /// velocity without any collision handling.
 pub(super) fn run_move_and_slide(
-    mut query: Query<(Entity, &mut Transform, &mut LinearVelocity, &Collider), With<Player>>,
+    mut query: Query<
+        (
+            Entity,
+            &mut Transform,
+            &mut LinearVelocity,
+            &Collider,
+            &Tint,
+        ),
+        With<Player>,
+    >,
+    walls: Query<(Entity, &Tint), With<Wall>>,
     move_and_slide: MoveAndSlide,
     time: Res<Time>,
 ) {
-    for (entity, mut transform, mut lin_vel, collider) in &mut query {
+    for (entity, mut transform, mut lin_vel, collider, player_tint) in &mut query {
+        let tint_walls = walls
+            .iter()
+            .filter_map(|(entity, wall_tint)| (wall_tint == player_tint).then(|| entity))
+            .collect::<Vec<_>>();
+
         // Perform move and slide
         let MoveAndSlideOutput {
             position,
@@ -97,7 +120,7 @@ pub(super) fn run_move_and_slide(
             lin_vel.0,
             time.delta(),
             &MoveAndSlideConfig::default(),
-            &SpatialQueryFilter::from_excluded_entities([entity]),
+            &SpatialQueryFilter::from_excluded_entities(tint_walls.iter().copied().chain([entity])),
             |_| MoveAndSlideHitResponse::Accept,
         );
 
