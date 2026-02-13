@@ -3,12 +3,7 @@ use bevy::{math::FloatPow, prelude::*};
 
 use crate::player::{Player, physics::Grounded};
 
-pub(super) fn plugin(app: &mut App) {
-    app.add_systems(
-        Update,
-        (update_coyote_timer, apply_movement, apply_gravity).chain(),
-    );
-}
+pub(super) fn plugin(_app: &mut App) {}
 
 const BLOCK_SIZE: Scalar = 16.0;
 
@@ -25,7 +20,7 @@ pub struct JumpImpulse(pub Scalar);
 /// The coyote timer of the Jump
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct CoyoteTimer(Timer);
+pub struct CoyoteTimer(Timer);
 
 impl Default for CoyoteTimer {
     fn default() -> Self {
@@ -97,7 +92,7 @@ impl CharacterMovementBundle {
 }
 
 /// Applies he gravity to character controllers.
-fn apply_gravity(
+pub(super) fn apply_gravity(
     time: Res<Time>,
     mut controllers: Query<(&GravityController, &mut LinearVelocity), Without<Grounded>>,
 ) {
@@ -118,7 +113,7 @@ fn apply_gravity(
 }
 
 /// Responds to [`Action`] events and moves character controllers accordingly.
-fn apply_movement(
+pub(super) fn apply_movement(
     input: Res<ButtonInput<KeyCode>>,
     controller: Single<
         (
@@ -150,7 +145,10 @@ fn apply_movement(
 }
 
 /// Update the coyote timer every frame
-fn update_coyote_timer(time: Res<Time>, players: Query<(&mut CoyoteTimer, Has<Grounded>)>) {
+pub(super) fn update_coyote_timer(
+    time: Res<Time>,
+    players: Query<(&mut CoyoteTimer, Has<Grounded>)>,
+) {
     for (mut coyote_timer, is_grounded) in players {
         if is_grounded {
             coyote_timer.reset_timer();

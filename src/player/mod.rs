@@ -12,6 +12,18 @@ pub mod physics;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((movement::plugin, physics::plugin));
+
+    app.add_systems(
+        FixedUpdate,
+        (
+            movement::apply_gravity,
+            physics::run_move_and_slide,
+            physics::update_grounded,
+            movement::update_coyote_timer,
+        )
+            .chain(),
+    )
+    .add_systems(Update, movement::apply_movement);
 }
 
 #[derive(Component)]
