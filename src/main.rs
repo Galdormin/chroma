@@ -52,7 +52,7 @@ impl Plugin for AppPlugin {
         ));
 
         // Configure LdtkSettings
-        app.insert_resource(LevelSelection::index(0))
+        app.insert_resource(LevelSelection::Uid(0))
             .insert_resource(LdtkSettings {
                 level_spawn_behavior: bevy_ecs_ldtk::LevelSpawnBehavior::UseWorldTranslation {
                     load_level_neighbors: true,

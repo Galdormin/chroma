@@ -27,7 +27,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Component)]
-struct Player;
+pub struct Player;
 
 pub fn spawn_character(
     mut commands: Commands,
@@ -39,7 +39,7 @@ pub fn spawn_character(
     commands.spawn((
         Player,
         Mesh2d(mesh_assets.add(shape)),
-        MeshMaterial2d(material_asets.add(Color::from(WHITE))),
+        MeshMaterial2d(material_asets.add(WHITE)),
         CharacterMovementBundle::new(10.0, 4.0, 0.3, 0.3),
         CharacterPhysicsBundle::new(shape),
         Transform::from_xyz(765.0, -130.0, 1.0),

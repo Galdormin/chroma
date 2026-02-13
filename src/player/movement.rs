@@ -76,8 +76,6 @@ impl CharacterMovementBundle {
         let fall_gravity = (2.0 * jump_height * BLOCK_SIZE) / fall_time.squared();
         let jump_velocity = jump_gravity * jump_time;
 
-        info!("gravity: {jump_gravity}, jump: {jump_velocity}");
-
         Self {
             speed: MovementSpeed(speed * BLOCK_SIZE),
             jump_impulse: JumpImpulse(jump_velocity),
@@ -112,7 +110,7 @@ pub(super) fn apply_gravity(
     }
 }
 
-/// Responds to [`Action`] events and moves character controllers accordingly.
+/// Responds to inputs and moves character controllers accordingly.
 pub(super) fn apply_movement(
     input: Res<ButtonInput<KeyCode>>,
     controller: Single<
