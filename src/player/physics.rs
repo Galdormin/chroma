@@ -49,7 +49,8 @@ impl CharacterPhysicsBundle {
             ),
             position_integration: CustomPositionIntegration,
             ground_caster: ShapeCaster::new(caster_shape, Vector::ZERO, 0.0, Dir2::NEG_Y)
-                .with_max_distance(3.0),
+                .with_max_distance(3.0)
+                .with_max_hits(7),
         }
     }
 }
@@ -102,7 +103,8 @@ pub(super) fn run_move_and_slide(
     for (entity, mut transform, mut lin_vel, collider, player_tint) in &mut query {
         let tint_walls = walls
             .iter()
-            .filter_map(|(entity, wall_tint)| (wall_tint == player_tint).then(|| entity))
+            .filter(|(_, wall_tint)| **wall_tint == *player_tint)
+            .map(|(entity, _)| entity)
             .collect::<Vec<_>>();
 
         // Perform move and slide

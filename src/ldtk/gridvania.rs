@@ -47,7 +47,6 @@ fn update_level_selection(
             && level_bounds.contains(player.translation.truncate())
         {
             *level_selection = LevelSelection::iid(level.iid.clone());
-
             **camera = to_level_position(level_transform.translation);
         }
     }
