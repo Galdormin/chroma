@@ -21,6 +21,10 @@ pub(super) fn plugin(app: &mut App) {
 pub struct Tint(HashSet<GameColor>);
 
 impl Tint {
+    pub fn from_color(color: GameColor) -> Self {
+        color.into()
+    }
+
     /// Return a tint based on the colors field, i.e. an array of Enum.
     pub fn from_colors_field(instance: &EntityInstance) -> Self {
         instance

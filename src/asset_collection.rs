@@ -33,6 +33,10 @@ pub struct AudioAssets {
     pub hover_sound: Handle<AudioSource>,
     #[asset(path = "audio/sound_effects/button_click.ogg")]
     pub click_sound: Handle<AudioSource>,
+
+    // SFX Sounds
+    #[asset(path = "audio/sound_effects/paint_spray.ogg")]
+    pub paint_spray: Handle<AudioSource>,
 }
 
 #[derive(AssetCollection, Resource)]

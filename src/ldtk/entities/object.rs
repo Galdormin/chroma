@@ -15,7 +15,7 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct ObjectLevitation {
+pub struct ObjectLevitation {
     initial_position: Option<Vec2>,
     /// Oscillation amplitude of the movement in pixel.
     pub amplitude: f32,

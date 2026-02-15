@@ -11,7 +11,7 @@
 	"iid": "777da910-fa90-11f0-9060-0dc09360201d",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 232,
+	"nextUid": 234,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -847,6 +847,82 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "Droplet",
+			"uid": 232,
+			"tags": [],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#D77643",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 1,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 1, "x": 128, "y": 16, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": [
+				{
+					"identifier": "color",
+					"doc": null,
+					"__type": "LocalEnum.Color",
+					"uid": 233,
+					"type": "F_Enum(2)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "EntityTile",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Grey"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -863,20 +939,20 @@
 			"padding": 0,
 			"tags": [],
 			"tagsSourceEnumUid": 2,
-			"enumTags": [ { "enumValueId": "Grey", "tileIds": [14,33,34,35,44,46,55,56,57] }, { "enumValueId": "Green", "tileIds": [14,37,38,39,48,50,59,60,61] }, { "enumValueId": "Brown", "tileIds": [14,41,42,43,52,54,63,64,65] } ],
+			"enumTags": [ { "enumValueId": "Grey", "tileIds": [33,34,35,44,46,55,56,57] }, { "enumValueId": "Green", "tileIds": [37,38,39,48,50,59,60,61] }, { "enumValueId": "Brown", "tileIds": [41,42,43,52,54,63,64,65] } ],
 			"customData": [],
 			"savedSelections": [],
 			"cachedPixelData": {
 				"opaqueTiles": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-				"averageColors": "76667a767997000000000000000000000000000000001cca2cca1cca66762cca49762cca00000000000000000000000000000000000000000000000000000000000055563556555600005686368656860000585638565856355600003556000026860000268600003856000038564556255645560000368626863686000048563856485600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+				"averageColors": "76667a767997000000000000000000000000000000001cca2cca1cca66762cca49762cca00003686385635560000000000000000000000000000000000000000000055563556555600005686368656860000585638565856355600003556000026860000268600003856000038564556255645560000368626863686000048563856485600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 			}
 		}
 	], "enums": [
 		{ "identifier": "Color", "uid": 2, "values": [
-			{ "id": "Grey", "tileRect": null, "color": 9149364 },
-			{ "id": "Green", "tileRect": null, "color": 6539085 },
-			{ "id": "Brown", "tileRect": null, "color": 7552569 }
-		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
+			{ "id": "Grey", "tileRect": { "tilesetUid": 1, "x": 160, "y": 16, "w": 16, "h": 16 }, "color": 9149364 },
+			{ "id": "Green", "tileRect": { "tilesetUid": 1, "x": 128, "y": 16, "w": 16, "h": 16 }, "color": 6539085 },
+			{ "id": "Brown", "tileRect": { "tilesetUid": 1, "x": 144, "y": 16, "w": 16, "h": 16 }, "color": 7552569 }
+		], "iconTilesetUid": 1, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Objects", "uid": 229, "values": [ { "id": "Book", "tileRect": { "tilesetUid": 1, "x": 48, "y": 16, "w": 16, "h": 16 }, "color": 12470831 }, { "id": "Feather", "tileRect": { "tilesetUid": 1, "x": 80, "y": 16, "w": 16, "h": 16 }, "color": 14120515 } ], "iconTilesetUid": 1, "externalRelPath": null, "externalFileChecksum": null, "tags": [] }
 	], "externalEnums": [], "levelFields": [] },
 	"levels": [
@@ -924,7 +1000,27 @@
 					"seed": 4157290,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
-					"entityInstances": []
+					"entityInstances": [
+						{
+							"__identifier": "Droplet",
+							"__grid": [24,13],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 1, "x": 128, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "41223e00-fa90-11f0-bb4b-cf7de5c9eb0c",
+							"width": 16,
+							"height": 16,
+							"defUid": 232,
+							"px": [384,208],
+							"fieldInstances": [{ "__identifier": "color", "__type": "LocalEnum.Color", "__value": "Green", "__tile": { "tilesetUid": 1, "x": 128, "y": 16, "w": 16, "h": 16 }, "defUid": 233, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Green"]
+							}] }],
+							"__worldX": 384,
+							"__worldY": 208
+						}
+					]
 				},
 				{
 					"__identifier": "Deco",
@@ -1419,7 +1515,10 @@
 							"defUid": 188,
 							"px": [176,208],
 							"fieldInstances": [
-								{ "__identifier": "type", "__type": "LocalEnum.Objects", "__value": "Book", "__tile": { "tilesetUid": 1, "x": 48, "y": 16, "w": 16, "h": 16 }, "defUid": 230, "realEditorValues": [] },
+								{ "__identifier": "type", "__type": "LocalEnum.Objects", "__value": "Book", "__tile": { "tilesetUid": 1, "x": 48, "y": 16, "w": 16, "h": 16 }, "defUid": 230, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Book"]
+								}] },
 								{ "__identifier": "colors", "__type": "Array<LocalEnum.Color>", "__value": [ "Green", "Grey" ], "__tile": null, "defUid": 231, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["Green"]
@@ -1625,7 +1724,27 @@
 					"seed": 1773760,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
-					"entityInstances": []
+					"entityInstances": [
+						{
+							"__identifier": "Droplet",
+							"__grid": [23,11],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 1, "x": 160, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "4cb3ab00-fa90-11f0-bb4b-5bcf32d6601e",
+							"width": 16,
+							"height": 16,
+							"defUid": 232,
+							"px": [368,176],
+							"fieldInstances": [{ "__identifier": "color", "__type": "LocalEnum.Color", "__value": "Grey", "__tile": { "tilesetUid": 1, "x": 160, "y": 16, "w": 16, "h": 16 }, "defUid": 233, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Grey"]
+							}] }],
+							"__worldX": 1392,
+							"__worldY": 176
+						}
+					]
 				},
 				{
 					"__identifier": "Deco",
