@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    ldtk::wall::Tint,
+    ldtk::GameColor,
     player::{
         movement::CharacterMovementBundle, physics::CharacterPhysicsBundle,
         visual::CharacterVisualBundle,
@@ -42,7 +42,7 @@ pub fn spawn_character(
 
     commands.spawn((
         Player,
-        CharacterVisualBundle::new(shape, Tint::White, mesh_assets, material_asets),
+        CharacterVisualBundle::new(shape, GameColor::White, mesh_assets, material_asets),
         CharacterMovementBundle::new(10.0, 4.0, 0.3, 0.3),
         CharacterPhysicsBundle::new(shape),
         Transform::from_xyz(765.0, -130.0, 3.0),

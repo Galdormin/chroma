@@ -6,7 +6,7 @@ use bevy::prelude::*;
 
 use crate::{
     GameLayer,
-    ldtk::wall::{Tint, Wall},
+    ldtk::{Tint, wall::Wall},
     player::Player,
 };
 
@@ -68,7 +68,7 @@ pub(super) fn update_grounded(
             .filter(|hit_data| {
                 walls
                     .get(hit_data.entity)
-                    .is_ok_and(|hit_tint| hit_tint != player_tint)
+                    .is_ok_and(|hit_tint| !player_tint.share_color_with(hit_tint))
             })
             .collect::<Vec<&ShapeHitData>>();
 
@@ -103,7 +103,7 @@ pub(super) fn run_move_and_slide(
     for (entity, mut transform, mut lin_vel, collider, player_tint) in &mut query {
         let tint_walls = walls
             .iter()
-            .filter(|(_, wall_tint)| **wall_tint == *player_tint)
+            .filter(|(_, wall_tint)| player_tint.share_color_with(*wall_tint))
             .map(|(entity, _)| entity)
             .collect::<Vec<_>>();
 

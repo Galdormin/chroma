@@ -2,4 +2,8 @@
 
 use bevy::prelude::*;
 
-pub(super) fn plugin(_app: &mut App) {}
+pub mod object;
+
+pub(super) fn plugin(app: &mut App) {
+    app.add_plugins(object::plugin);
+}

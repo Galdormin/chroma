@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use crate::{ldtk::wall::Tint, player::Player};
+use crate::{
+    ldtk::{GameColor, Tint},
+    player::Player,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, change_player_tint);
@@ -18,14 +21,14 @@ pub struct CharacterVisualBundle {
 impl CharacterVisualBundle {
     pub fn new(
         shape: Capsule2d,
-        tint: Tint,
+        color: GameColor,
         mut mesh_assets: ResMut<Assets<Mesh>>,
         mut material_asets: ResMut<Assets<ColorMaterial>>,
     ) -> Self {
         Self {
             mesh: Mesh2d(mesh_assets.add(shape)),
-            material: MeshMaterial2d(material_asets.add(tint.color())),
-            tint,
+            material: MeshMaterial2d(material_asets.add(color.color())),
+            tint: color.into(),
         }
     }
 }
@@ -35,21 +38,47 @@ fn update_player_color(
     mut material_asets: ResMut<Assets<ColorMaterial>>,
 ) {
     for (mut material, tint) in players {
-        *material = MeshMaterial2d(material_asets.add(tint.color()))
+        let game_color = match tint.get_colors()[..] {
+            [color] => color,
+            [] => {
+                warn!("Player should have a color. Use default to GameColor::White");
+                GameColor::White
+            }
+            [color, ..] => {
+                warn!("Player should have a single color.");
+                color
+            }
+        };
+
+        *material = MeshMaterial2d(material_asets.add(game_color.color()))
     }
 }
 
+// Used only for debug
 fn change_player_tint(players: Query<&mut Tint, With<Player>>, input: Res<ButtonInput<KeyCode>>) {
     if !input.just_pressed(KeyCode::Tab) {
         return;
     }
 
     for mut tint in players {
-        *tint = match *tint {
-            Tint::White => Tint::Brown,
-            Tint::Grey => Tint::White,
-            Tint::Green => Tint::Grey,
-            Tint::Brown => Tint::Green,
+        let color = match tint.get_colors()[..] {
+            [color] => color,
+            [] => {
+                warn!("Player should have a color. Use default to GameColor::White");
+                GameColor::White
+            }
+            [color, ..] => {
+                warn!("Player should have a single color.");
+                color
+            }
         };
+
+        *tint = match color {
+            GameColor::White => GameColor::Brown,
+            GameColor::Grey => GameColor::White,
+            GameColor::Green => GameColor::Grey,
+            GameColor::Brown => GameColor::Green,
+        }
+        .into();
     }
 }
