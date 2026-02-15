@@ -33,6 +33,7 @@ fn spawn_main_menu(
         #[cfg(target_family = "wasm")]
         children![
             widget::image(ui_assets.title_art.clone(), Val::Auto),
+            widget::hspace(px(20)),
             widget::button("Play", enter_gameplay_screen),
             widget::button("Settings", open_settings_menu),
             widget::button("Credits", open_credits_menu),
