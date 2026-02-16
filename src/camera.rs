@@ -37,7 +37,7 @@ fn spawn_camera(mut commands: Commands) {
 /// Change the position of the camera to match the level position
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-pub struct LevelPosition(IVec2);
+pub struct LevelPosition(pub IVec2);
 
 impl LevelPosition {
     pub fn new(x: i32, y: i32) -> Self {

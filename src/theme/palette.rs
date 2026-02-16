@@ -2,26 +2,14 @@ use bevy::color::Color;
 
 /* === GAME COLORS === */
 
-/// #452b3f
-pub const BACKGROUND: Color = Color::srgb_u8(36, 43, 63);
+pub const BACKGROUND: Color = Color::srgb_u8(73, 52, 61);
 
-/// #e0d3c8
-pub const WHITE: Color = Color::srgb_u8(224, 211, 200);
-
-/// #56546e
+pub const WHITE: Color = Color::srgb_u8(210, 201, 165);
 pub const GREY: Color = Color::srgb_u8(86, 84, 110);
-
-/// #2c5e3b
-pub const GREEN: Color = Color::srgb_u8(44, 94, 59);
-
-/// #865565
-pub const BROWN: Color = Color::srgb_u8(134, 85, 101);
-
-/// #f05b5b
-pub const RED: Color = Color::srgb_u8(240, 91, 91);
-
-/// #df8c50
-pub const YELLOW: Color = Color::srgb_u8(233, 140, 80);
+pub const GREEN: Color = Color::srgb_u8(102, 132, 95);
+pub const BROWN: Color = Color::srgb_u8(138, 88, 101);
+pub const RED: Color = Color::srgb_u8(182, 92, 95);
+pub const YELLOW: Color = Color::srgb_u8(188, 133, 99);
 
 /// All biome colors
 pub const BIOME_COLORS: &[Color] = &[GREY, GREEN, BROWN, RED, YELLOW];
