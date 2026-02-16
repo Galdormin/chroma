@@ -96,7 +96,7 @@ pub(super) fn run_move_and_slide(
         ),
         With<Player>,
     >,
-    walls: Query<(Entity, &Tint), With<Wall>>,
+    walls: Query<(Entity, &Tint), With<Collider>>,
     move_and_slide: MoveAndSlide,
     time: Res<Time>,
 ) {

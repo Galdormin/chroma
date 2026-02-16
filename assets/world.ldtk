@@ -1504,31 +1504,28 @@
 					"entityInstances": [
 						{
 							"__identifier": "Object",
-							"__grid": [11,13],
+							"__grid": [21,11],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 1, "x": 48, "y": 16, "w": 16, "h": 16 },
 							"__smartColor": "#BE4A2F",
-							"iid": "5a8a1b40-fa90-11f0-bb4b-11ebf9de43bd",
+							"iid": "07636440-fa90-11f0-a681-e11b00362088",
 							"width": 16,
 							"height": 16,
 							"defUid": 188,
-							"px": [176,208],
+							"px": [336,176],
 							"fieldInstances": [
 								{ "__identifier": "type", "__type": "LocalEnum.Objects", "__value": "Book", "__tile": { "tilesetUid": 1, "x": 48, "y": 16, "w": 16, "h": 16 }, "defUid": 230, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Book"]
 								}] },
-								{ "__identifier": "colors", "__type": "Array<LocalEnum.Color>", "__value": [ "Green", "Grey" ], "__tile": null, "defUid": 231, "realEditorValues": [ {
+								{ "__identifier": "colors", "__type": "Array<LocalEnum.Color>", "__value": ["Green"], "__tile": null, "defUid": 231, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Green"]
-								}, {
-									"id": "V_String",
-									"params": ["Grey"]
-								} ] }
+								}] }
 							],
-							"__worldX": 688,
-							"__worldY": 208
+							"__worldX": 848,
+							"__worldY": 176
 						}
 					]
 				},

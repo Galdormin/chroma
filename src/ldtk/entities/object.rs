@@ -1,16 +1,22 @@
 use std::str::FromStr;
 
-use avian2d::math::TAU;
+use avian2d::{
+    math::TAU,
+    prelude::{
+        Collider, CollisionEventsEnabled, CollisionLayers, CollisionStart, RigidBody, Sensor,
+    },
+};
 use bevy::prelude::*;
 
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::ldtk::{Tint, wall::WallBundle};
+use crate::{GameLayer, ldtk::Tint, player::Player};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_ldtk_entity::<ObjectBundle>("Object");
 
     app.add_systems(Update, (register_initial_position, levitate_object).chain());
+    app.add_systems(Update, register_collision_observer);
 }
 
 #[derive(Component, Reflect, Debug)]
@@ -77,7 +83,26 @@ struct ObjectBundle {
     #[default]
     levitation: ObjectLevitation,
     #[default]
-    wall: WallBundle,
+    physics: ObjectPhysicalBundle,
+}
+
+#[derive(Bundle)]
+struct ObjectPhysicalBundle {
+    body: RigidBody,
+    collider: Collider,
+    collision_event: CollisionEventsEnabled,
+    collision_layer: CollisionLayers,
+}
+
+impl Default for ObjectPhysicalBundle {
+    fn default() -> Self {
+        Self {
+            body: RigidBody::Static,
+            collider: Collider::rectangle(16.0, 16.0),
+            collision_event: CollisionEventsEnabled,
+            collision_layer: CollisionLayers::new(GameLayer::Sensor, [GameLayer::Player]),
+        }
+    }
 }
 
 fn register_initial_position(
@@ -96,5 +121,28 @@ fn levitate_object(objects: Query<(&ObjectLevitation, &mut Transform)>, time: Re
         };
 
         transform.translation.y = next_position.y;
+    }
+}
+
+fn register_collision_observer(mut commands: Commands, objects: Query<Entity, Added<ObjectType>>) {
+    for object in objects {
+        commands.entity(object).observe(detect_object_pickup);
+    }
+}
+
+fn detect_object_pickup(
+    trigger: On<CollisionStart>,
+    mut commands: Commands,
+    mut objects: Query<(&mut Visibility, &Tint), With<ObjectType>>,
+    player_tint: Single<&Tint, With<Player>>,
+) {
+    let Ok((mut object_visibility, object_tint)) = objects.get_mut(trigger.event_target()) else {
+        return;
+    };
+
+    if object_tint.share_color_with(&player_tint) {
+        // TODO: Change this to despawn. Simple despawn panic with physics engine.
+        *object_visibility = Visibility::Hidden;
+        commands.entity(trigger.event_target()).insert(Sensor);
     }
 }
