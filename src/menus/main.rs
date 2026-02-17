@@ -3,7 +3,8 @@
 use bevy::prelude::*;
 
 use crate::{
-    asset_collection::UiAssets, camera::LevelPosition, menus::Menu, screens::Screen, theme::widget,
+    asset_collection::UiAssets, ldtk::gridvania::GridLevelSelection, menus::Menu, screens::Screen,
+    theme::widget,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -12,10 +13,10 @@ pub(super) fn plugin(app: &mut App) {
 
 fn spawn_main_menu(
     mut commands: Commands,
-    mut camera: Single<&mut LevelPosition, With<Camera2d>>,
     ui_assets: Res<UiAssets>,
+    mut level_selection: ResMut<GridLevelSelection>,
 ) {
-    **camera = LevelPosition::new(0, 0);
+    *level_selection = GridLevelSelection::new((0, 0));
 
     commands.spawn((
         widget::ui_root("Main Menu"),

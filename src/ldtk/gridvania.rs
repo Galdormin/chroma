@@ -1,53 +1,130 @@
-use bevy::prelude::*;
+use bevy::{platform::collections::HashMap, prelude::*};
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::{
-    camera::{LEVEL_SIZE, LevelPosition, MainCamera},
-    player::Player,
-};
+use crate::{asset_collection::LevelAssets, player::Player, screens::Screen};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, update_level_selection);
+    app.init_resource::<GridLevelSelection>();
+
+    app.add_systems(
+        Update,
+        populate_gridvania_levels.run_if(resource_added::<LevelAssets>),
+    )
+    .add_systems(
+        Update,
+        update_level_selection.run_if(resource_changed::<GridLevelSelection>),
+    )
+    .add_systems(
+        Update,
+        level_selection_follow_player.run_if(in_state(Screen::Gameplay)),
+    );
 }
 
-/// Convert a Level Bevy translation to [`LevelPosition`].
+pub const LEVEL_SIZE: IVec2 = IVec2::new(512, 288);
+
+/// Position of a Level in the GridVania world.
 ///
-/// LDtk position starts at top-left and bevy at bottom-left,
-/// therefore  `- ivec2(0, 1)` is needed.
-fn to_level_position(position: Vec3) -> LevelPosition {
-    let ldtk_position = position.truncate().as_ivec2() * ivec2(1, -1);
-    let grid_position = ldtk_position / LEVEL_SIZE - ivec2(0, 1);
-    LevelPosition(grid_position)
+/// The level at position (0, 0) is the one with the upper left corner at
+/// (0, 0) in world coords.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect, Default)]
+pub struct GridCoords(IVec2);
+
+impl GridCoords {
+    pub fn new(coords: IVec2) -> Self {
+        Self(coords)
+    }
+
+    pub fn get(&self) -> IVec2 {
+        self.0
+    }
+
+    /// Convert a 2D Bevy position to [`Self`]
+    pub fn from_world_position(position: Vec2) -> Self {
+        let grid_pos = (position.as_ivec2() * ivec2(1, -1)) / LEVEL_SIZE;
+        Self(grid_pos)
+    }
+
+    /// Return the 2D Bevy position of the center of the Level represented by the coordinates.
+    pub fn center(&self) -> Vec2 {
+        let ldtk_position = self.0 * LEVEL_SIZE + LEVEL_SIZE / 2;
+        (ldtk_position * ivec2(1, -1)).as_vec2()
+    }
 }
 
-fn update_level_selection(
-    levels: Query<(&LevelIid, &Transform), (Without<Player>, Without<MainCamera>)>,
-    player: Single<&Transform, (With<Player>, Without<MainCamera>)>,
-    mut camera: Single<&mut LevelPosition, With<MainCamera>>,
-    mut level_selection: ResMut<LevelSelection>,
-    ldtk_project_handle: Single<&LdtkProjectHandle>,
+impl<T: Into<IVec2>> From<T> for GridCoords {
+    fn from(value: T) -> Self {
+        Self::new(value.into())
+    }
+}
+
+/// Resource to select which [`Level`] to spawn based on the grid position.
+/// Sycnhronized with [`LevelSelection`].
+///
+/// Must not be used with [`LevelSelection`]
+#[derive(Resource, Reflect, Debug, Default)]
+#[reflect(Resource)]
+pub struct GridLevelSelection(pub GridCoords);
+
+impl GridLevelSelection {
+    pub fn new(coords: impl Into<GridCoords>) -> Self {
+        Self(coords.into())
+    }
+}
+
+/// Resource that maps a [`GridvaniaCoords`] to a [`LevelIid`].
+///
+/// Automatically filled and added when the [`LdtkProject`] is loaded.
+#[derive(Resource, Reflect, Debug, Default)]
+#[reflect(Resource)]
+pub struct GridvaniaLevels(HashMap<GridCoords, LevelIid>);
+
+impl GridvaniaLevels {
+    pub fn get_level_at(&self, coords: impl Into<GridCoords>) -> Option<LevelIid> {
+        self.0.get(&coords.into()).cloned()
+    }
+}
+
+fn populate_gridvania_levels(
+    mut commands: Commands,
+    level_assets: Res<LevelAssets>,
     ldtk_project_assets: Res<Assets<LdtkProject>>,
 ) {
     let ldtk_project = ldtk_project_assets
-        .get(*ldtk_project_handle)
-        .expect("Project should be loaded if level is spawned.");
+        .get(level_assets.world.id())
+        .expect("Project should be loaded by then.");
 
-    for (level_iid, level_transform) in &levels {
-        let level = ldtk_project
-            .get_raw_level_by_iid(&level_iid.to_string())
-            .expect("Spawned level should exist in LDtk project.");
+    let level_map = ldtk_project
+        .iter_raw_levels()
+        .map(|l| {
+            let world_coords = ivec2(l.world_x, -l.world_y).as_vec2();
+            let grid_coords = GridCoords::from_world_position(world_coords);
+            (grid_coords, LevelIid::new(l.iid.clone()))
+        })
+        .collect::<HashMap<_, _>>();
 
-        let level_bounds = Rect {
-            min: level_transform.translation.truncate(),
-            max: level_transform.translation.truncate()
-                + Vec2::new(level.px_wid as f32, level.px_hei as f32),
-        };
+    info!("{} level loaded.", level_map.len());
+    commands.insert_resource(GridvaniaLevels(level_map));
+}
 
-        if !level_selection.is_match(&LevelIndices::default(), level)
-            && level_bounds.contains(player.translation.truncate())
-        {
-            *level_selection = LevelSelection::iid(level.iid.clone());
-            **camera = to_level_position(level_transform.translation);
-        }
+fn update_level_selection(
+    grid_level_selection: Res<GridLevelSelection>,
+    mut level_selection: ResMut<LevelSelection>,
+    levels: If<Res<GridvaniaLevels>>,
+) {
+    if let Some(level_iid) = levels.get_level_at(grid_level_selection.0) {
+        *level_selection = LevelSelection::Iid(level_iid);
+    } else {
+        warn!("Level at {} does not exists.", grid_level_selection.0.get())
+    }
+}
+
+fn level_selection_follow_player(
+    player: Single<&Transform, With<Player>>,
+    mut grid_level_selection: ResMut<GridLevelSelection>,
+) {
+    let grid_pos = GridCoords::from_world_position(player.translation.truncate());
+
+    if grid_pos != grid_level_selection.0 {
+        *grid_level_selection = GridLevelSelection(grid_pos);
     }
 }

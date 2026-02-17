@@ -6,7 +6,7 @@ use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use crate::{
     audio::{AudioSettings, VolumeType},
-    camera::LevelPosition,
+    ldtk::gridvania::GridLevelSelection,
     menus::Menu,
     screens::Screen,
     theme::prelude::*,
@@ -22,11 +22,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, update_volume_label.run_if(in_state(Menu::Settings)));
 }
 
-fn spawn_settings_menu(
-    mut commands: Commands,
-    mut camera: Single<&mut LevelPosition, With<Camera2d>>,
-) {
-    **camera = LevelPosition::new(0, 1);
+fn spawn_settings_menu(mut commands: Commands, mut level_selection: ResMut<GridLevelSelection>) {
+    *level_selection = GridLevelSelection::new((0, 1));
 
     commands.spawn((
         widget::ui_root("Settings Menu"),

@@ -8,7 +8,7 @@ use bevy_ecs_ldtk::{prelude::LdtkFields, *};
 use crate::theme::palette::*;
 
 pub mod entities;
-mod gridvania;
+pub mod gridvania;
 pub mod wall;
 
 pub(super) fn plugin(app: &mut App) {

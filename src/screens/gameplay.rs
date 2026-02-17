@@ -2,11 +2,9 @@
 
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
-use crate::{Pause, camera::LevelPosition, menus::Menu, player::spawn_character, screens::Screen};
+use crate::{Pause, menus::Menu, screens::Screen};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Gameplay), (move_camera, spawn_character));
-
     // Toggle pause on key press.
     app.add_systems(
         Update,
@@ -28,10 +26,6 @@ pub(super) fn plugin(app: &mut App) {
         OnEnter(Menu::None),
         unpause.run_if(in_state(Screen::Gameplay)),
     );
-}
-
-fn move_camera(mut camera: Single<&mut LevelPosition, With<Camera2d>>) {
-    **camera = LevelPosition::new(1, 0);
 }
 
 fn unpause(mut next_pause: ResMut<NextState<Pause>>) {

@@ -2,7 +2,7 @@
 
 use bevy::{ecs::spawn::SpawnIter, input::common_conditions::input_just_pressed, prelude::*};
 
-use crate::{camera::LevelPosition, menus::Menu, theme::prelude::*};
+use crate::{ldtk::gridvania::GridLevelSelection, menus::Menu, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Menu::Credits), spawn_credits_menu);
@@ -12,11 +12,8 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-fn spawn_credits_menu(
-    mut commands: Commands,
-    mut camera: Single<&mut LevelPosition, With<Camera2d>>,
-) {
-    **camera = LevelPosition::new(0, -1);
+fn spawn_credits_menu(mut commands: Commands, mut level_selection: ResMut<GridLevelSelection>) {
+    *level_selection = GridLevelSelection::new((0, -1));
 
     commands.spawn((
         widget::ui_root("Credits Menu"),
