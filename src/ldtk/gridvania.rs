@@ -57,7 +57,7 @@ impl<T: Into<IVec2>> From<T> for GridCoords {
     }
 }
 
-/// Resource to select which [`Level`] to spawn based on the grid position.
+/// Resource to select which Level to spawn based on the grid position.
 /// Sycnhronized with [`LevelSelection`].
 ///
 /// Must not be used with [`LevelSelection`]
@@ -71,7 +71,7 @@ impl GridLevelSelection {
     }
 }
 
-/// Resource that maps a [`GridvaniaCoords`] to a [`LevelIid`].
+/// Resource that maps a [`GridCoords`] to a [`LevelIid`].
 ///
 /// Automatically filled and added when the [`LdtkProject`] is loaded.
 #[derive(Resource, Reflect, Debug, Default)]
