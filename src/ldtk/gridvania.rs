@@ -40,7 +40,8 @@ impl GridCoords {
 
     /// Convert a 2D Bevy position to [`Self`]
     pub fn from_world_position(position: Vec2) -> Self {
-        let grid_pos = (position.as_ivec2() * ivec2(1, -1)) / LEVEL_SIZE;
+        let ldtk_position = position * vec2(1., -1.);
+        let grid_pos = (ldtk_position / LEVEL_SIZE.as_vec2()).floor().as_ivec2();
         Self(grid_pos)
     }
 
@@ -126,5 +127,41 @@ fn level_selection_follow_player(
 
     if grid_pos != grid_level_selection.0 {
         *grid_level_selection = GridLevelSelection(grid_pos);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_grid_coords_from_world_position() {
+        // Typical case
+        assert_eq!(
+            GridCoords::from_world_position(vec2(1279., -1012.)),
+            GridCoords(ivec2(2, 3))
+        );
+        assert_eq!(
+            GridCoords::from_world_position(vec2(767., -115.)),
+            GridCoords(ivec2(1, 0))
+        );
+        assert_eq!(
+            GridCoords::from_world_position(vec2(168., -115.)),
+            GridCoords(ivec2(0, 0))
+        );
+
+        // Negative coords (#6)
+        assert_eq!(
+            GridCoords::from_world_position(vec2(325., 260.)),
+            GridCoords(ivec2(0, -1))
+        );
+        assert_eq!(
+            GridCoords::from_world_position(vec2(-325., -215.)),
+            GridCoords(ivec2(-1, 0))
+        );
+        assert_eq!(
+            GridCoords::from_world_position(vec2(-1322., 426.)),
+            GridCoords(ivec2(-3, -2))
+        );
     }
 }

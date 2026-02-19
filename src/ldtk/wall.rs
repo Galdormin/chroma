@@ -33,7 +33,7 @@ pub enum WallCollider {
 }
 
 impl WallCollider {
-    fn to_coords(self) -> Vec<RectShape> {
+    fn into_coords(self) -> Vec<RectShape> {
         match self {
             WallCollider::Top(height) => vec![(0, 0, TILE_SIZE, height)],
             WallCollider::Bottom(height) => vec![(0, TILE_SIZE - height, TILE_SIZE, TILE_SIZE)],
@@ -64,7 +64,7 @@ impl WallCollider {
         }
     }
 
-    fn to_collider(self) -> Collider {
+    fn into_collider(self) -> Collider {
         let shapes = self
             .to_coords()
             .iter()
