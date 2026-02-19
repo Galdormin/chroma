@@ -66,7 +66,7 @@ impl WallCollider {
 
     fn into_collider(self) -> Collider {
         let shapes = self
-            .to_coords()
+            .into_coords()
             .iter()
             .copied()
             .map(|(a, b, c, d)| {
@@ -115,7 +115,7 @@ fn add_tint_to_wall(
         let bundle = if let Some(metadata) = maybe_metadata {
             match ron::from_str::<WallCollider>(&metadata.data) {
                 Ok(wall_collider) => WallBundle {
-                    collider: wall_collider.to_collider(),
+                    collider: wall_collider.into_collider(),
                     ..default()
                 },
                 Err(err) => {
