@@ -33,7 +33,7 @@ pub enum WallCollider {
 }
 
 impl WallCollider {
-    fn as_custom(self) -> Vec<RectShape> {
+    fn to_coords(self) -> Vec<RectShape> {
         match self {
             WallCollider::Top(height) => vec![(0, 0, TILE_SIZE, height)],
             WallCollider::Bottom(height) => vec![(0, TILE_SIZE - height, TILE_SIZE, TILE_SIZE)],
@@ -64,9 +64,9 @@ impl WallCollider {
         }
     }
 
-    fn as_collider(self) -> Collider {
+    fn to_collider(self) -> Collider {
         let shapes = self
-            .as_custom()
+            .to_coords()
             .iter()
             .copied()
             .map(|(a, b, c, d)| {
@@ -115,7 +115,7 @@ fn add_tint_to_wall(
         let bundle = if let Some(metadata) = maybe_metadata {
             match ron::from_str::<WallCollider>(&metadata.data) {
                 Ok(wall_collider) => WallBundle {
-                    collider: wall_collider.as_collider(),
+                    collider: wall_collider.to_collider(),
                     ..default()
                 },
                 Err(err) => {
