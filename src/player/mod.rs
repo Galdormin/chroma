@@ -48,7 +48,7 @@ pub fn spawn_character(
 
     let bundle = (
         Player,
-        CharacterVisualBundle::new(shape, GameColor::White, mesh_assets, material_asets),
+        CharacterVisualBundle::new(shape, GameColor::Grey, mesh_assets, material_asets),
         CharacterMovementBundle::new(10.0, 4.0, 0.3, 0.3),
         CharacterPhysicsBundle::new(shape),
         Transform::from_xyz(765.0, -130.0, 3.0),

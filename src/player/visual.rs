@@ -78,6 +78,7 @@ fn change_player_tint(players: Query<&mut Tint, With<Player>>, input: Res<Button
             GameColor::Grey => GameColor::White,
             GameColor::Green => GameColor::Grey,
             GameColor::Brown => GameColor::Green,
+            _ => GameColor::White,
         }
         .into();
     }

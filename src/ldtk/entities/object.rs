@@ -51,6 +51,8 @@ impl ObjectLevitation {
 pub enum ObjectType {
     Book,
     Feather,
+    Ink,
+    Parchment,
 }
 
 impl FromStr for ObjectType {
@@ -60,6 +62,8 @@ impl FromStr for ObjectType {
         match s {
             "Book" => Ok(Self::Book),
             "Feather" => Ok(Self::Feather),
+            "Parchment" => Ok(Self::Parchment),
+            "Ink" => Ok(Self::Ink),
             _ => Err(format!("Cannot parse {s} as ObjectType")),
         }
     }

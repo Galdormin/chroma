@@ -101,6 +101,7 @@ pub enum GameColor {
     Grey,
     Green,
     Brown,
+    Orange,
 }
 
 impl FromStr for GameColor {
@@ -112,6 +113,7 @@ impl FromStr for GameColor {
             "Grey" => Ok(Self::Grey),
             "Green" => Ok(Self::Green),
             "Brown" => Ok(Self::Brown),
+            "Orange" => Ok(Self::Orange),
             _ => Err(format!("Cannot parse {s} as GameColor.")),
         }
     }
@@ -124,6 +126,7 @@ impl GameColor {
             Self::Grey => GREY,
             Self::Green => GREEN,
             Self::Brown => BROWN,
+            Self::Orange => ORANGE,
         }
     }
 }
