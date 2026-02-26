@@ -33,7 +33,7 @@ impl Default for ObjectLevitation {
     fn default() -> Self {
         Self {
             initial_position: None,
-            amplitude: 8.0,
+            amplitude: 4.0,
             period: 5.0,
         }
     }
@@ -41,8 +41,24 @@ impl Default for ObjectLevitation {
 
 impl ObjectLevitation {
     pub fn next_position(&self, time: f32) -> Option<Vec2> {
-        let delta = self.amplitude / 2.0 * (time * TAU / self.period).sin() * Vec2::new(0., 1.);
-        self.initial_position.map(|pos| pos + delta)
+        self.initial_position.map(|pos| {
+            let delta = self.amplitude / 2.0
+                * (time * TAU / self.period + pos.x / 10.0).sin()
+                * Vec2::new(0., 1.);
+
+            pos + delta
+        })
+    }
+}
+
+#[derive(Component, Reflect, Debug, Deref, DerefMut)]
+#[reflect(Component)]
+pub struct InMuseum(pub bool);
+
+impl From<&EntityInstance> for InMuseum {
+    fn from(instance: &EntityInstance) -> Self {
+        let in_museum = instance.get_bool_field("in_museum").unwrap().to_owned();
+        Self(in_museum)
     }
 }
 
@@ -82,6 +98,8 @@ struct ObjectBundle {
     sprite: Sprite,
     #[from_entity_instance]
     object_type: ObjectType,
+    #[from_entity_instance]
+    in_meseum: InMuseum,
     #[with(Tint::from_colors_field)]
     tints: Tint,
     #[default]
@@ -137,12 +155,19 @@ fn register_collision_observer(mut commands: Commands, objects: Query<Entity, Ad
 fn detect_object_pickup(
     trigger: On<CollisionStart>,
     mut commands: Commands,
-    mut objects: Query<(&mut Visibility, &Tint), With<ObjectType>>,
+    mut objects: Query<(&mut Visibility, &Tint, &InMuseum), With<ObjectType>>,
     player_tint: Single<&Tint, With<Player>>,
 ) {
-    let Ok((mut object_visibility, object_tint)) = objects.get_mut(trigger.event_target()) else {
+    let Ok((mut object_visibility, object_tint, in_museum)) =
+        objects.get_mut(trigger.event_target())
+    else {
         return;
     };
+
+    // Do not pickup museum objects
+    if **in_museum {
+        return;
+    }
 
     if object_tint.share_color_with(&player_tint) {
         // TODO: Change this to despawn. Simple despawn panic with physics engine.

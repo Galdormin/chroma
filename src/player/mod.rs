@@ -51,7 +51,7 @@ pub fn spawn_character(
         CharacterVisualBundle::new(shape, GameColor::Grey, mesh_assets, material_asets),
         CharacterMovementBundle::new(10.0, 4.0, 0.3, 0.3),
         CharacterPhysicsBundle::new(shape),
-        Transform::from_xyz(765.0, -130.0, 3.0),
+        Transform::from_xyz(1272.0, -200.0, 3.0),
     );
 
     if let Some(player) = maybe_player {
