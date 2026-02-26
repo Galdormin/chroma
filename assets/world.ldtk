@@ -13,7 +13,16 @@
 	"appBuildId": 473703,
 	"nextUid": 274,
 	"identifierStyle": "Capitalize",
-	"toc": [],
+	"toc": [{
+		"identifier": "Spawn",
+		"instances": [],
+		"instancesData": [{ "iids": {
+			"worldIid": "777da911-fa90-11f0-9060-dd84d99e7328",
+			"levelIid": "a84920e0-fa90-11f0-bcf3-b5ec929713df",
+			"layerIid": "5337e3d2-fa90-11f0-8c51-e1109e31decb",
+			"entityIid": "48196240-fa90-11f0-b83e-95ba34c4ce78"
+		}, "worldX": 1272, "worldY": 200, "widPx": 16, "heiPx": 32, "fields" : {} }]
+	}],
 	"worldLayout": "GridVania",
 	"worldGridWidth": 512,
 	"worldGridHeight": 288,
@@ -1322,11 +1331,11 @@
 			"identifier": "Spawn",
 			"uid": 241,
 			"tags": [],
-			"exportToToc": false,
+			"exportToToc": true,
 			"allowOutOfBounds": false,
 			"doc": null,
 			"width": 16,
-			"height": 16,
+			"height": 32,
 			"resizableX": false,
 			"resizableY": false,
 			"minWidth": null,
@@ -1349,8 +1358,8 @@
 			"maxCount": 1,
 			"limitScope": "PerWorld",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
+			"pivotX": 0.5,
+			"pivotY": 0.5,
 			"fieldDefs": []
 		}
 	], "tilesets": [
@@ -2317,6 +2326,22 @@
 							],
 							"__worldX": 1360,
 							"__worldY": 144
+						},
+						{
+							"__identifier": "Spawn",
+							"__grid": [15,12],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#EAD4AA",
+							"iid": "48196240-fa90-11f0-b83e-95ba34c4ce78",
+							"width": 16,
+							"height": 32,
+							"defUid": 241,
+							"px": [248,200],
+							"fieldInstances": [],
+							"__worldX": 1272,
+							"__worldY": 200
 						}
 					]
 				},
