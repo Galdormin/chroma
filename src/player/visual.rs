@@ -6,8 +6,6 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, change_player_tint);
-
     app.add_systems(Update, update_player_color);
 }
 
@@ -51,35 +49,5 @@ fn update_player_color(
         };
 
         *material = MeshMaterial2d(material_asets.add(game_color.color()))
-    }
-}
-
-// Used only for debug
-fn change_player_tint(players: Query<&mut Tint, With<Player>>, input: Res<ButtonInput<KeyCode>>) {
-    if !input.just_pressed(KeyCode::Tab) {
-        return;
-    }
-
-    for mut tint in players {
-        let color = match tint.get_colors()[..] {
-            [color] => color,
-            [] => {
-                warn!("Player should have a color. Use default to GameColor::White");
-                GameColor::White
-            }
-            [color, ..] => {
-                warn!("Player should have a single color.");
-                color
-            }
-        };
-
-        *tint = match color {
-            GameColor::White => GameColor::Brown,
-            GameColor::Grey => GameColor::White,
-            GameColor::Green => GameColor::Grey,
-            GameColor::Brown => GameColor::Green,
-            _ => GameColor::White,
-        }
-        .into();
     }
 }
