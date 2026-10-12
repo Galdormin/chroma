@@ -30,14 +30,14 @@ fn spawn_credits_menu(mut commands: Commands, mut level_selection: ResMut<GridLe
 }
 
 fn created_by() -> impl Bundle {
-    grid(vec![["Galdormin", "Code & Design"], ["Nexia", "Art"]])
+    grid(vec![["Galdormin", "Code & Design & Art"]])
 }
 
 fn assets() -> impl Bundle {
     grid(vec![
-        ["Ducky sprite", "CC0 by Caz Creates Games"],
         ["Button SFX", "CC0 by Jaszunio15"],
         ["Music", "Exploration by Ansimuz"],
+        ["Monogram font", "CC0 by datagoblin"],
         ["Bevy logo", "All rights reserved by the Bevy Foundation"],
     ])
 }
